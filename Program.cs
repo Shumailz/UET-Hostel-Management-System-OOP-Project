@@ -220,9 +220,9 @@ namespace HostelSystem
                     Console.Clear();
                     Console.WriteLine("Room types: Executive Cubicle, Standard Cubicle, Shared Dorm");
                     string room = ConsoleHelper.readText("Enter Room (press Enter to skip): ");
-                    Console.WriteLine("1. Bill above value");
-                    Console.WriteLine("2. Bill below value");
-                    Console.WriteLine("3. Skip bill filter");
+                    Console.WriteLine("1. Bill above value (bill greater than or equal to value)");
+                    Console.WriteLine("2. Bill below value (bill less than or equal to value)");
+                    Console.WriteLine("3. Skip bill filter (or press Enter to skip)");
                     int numChoice = ConsoleHelper.readNum("Choose bill option: ");
                     float numValue = 0;
                     if (numChoice == 1 || numChoice == 2)
