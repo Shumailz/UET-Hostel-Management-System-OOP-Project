@@ -69,7 +69,9 @@ namespace HostelSystem
                 Console.WriteLine("2. Search & Print Fee Challan");
                 Console.WriteLine("3. Generate Official Merit List");
                 Console.WriteLine("4. Reject/Remove Applicant");
-                Console.WriteLine("5. Logout");
+                Console.WriteLine("5. View Students Page by Page");
+                Console.WriteLine("6. Quick Filter Students");
+                Console.WriteLine("7. Logout");
                 int opt = ConsoleHelper.readNum("Choose option: ");
                 if (opt == 1)
                 {
@@ -136,6 +138,137 @@ namespace HostelSystem
                     ConsoleHelper.pause();
                 }
                 else if (opt == 5)
+                {
+                    Console.Clear();
+                    int total = admin.getAll().Count;
+                    if (total == 0)
+                    {
+                        Console.WriteLine("No students found.");
+                        ConsoleHelper.pause();
+                    }
+                    else
+                    {
+                        int pageSize = ConsoleHelper.readNum("Enter page size (how many students on one page): ");
+                        if (pageSize <= 0)
+                        {
+                            Console.WriteLine("Invalid page size.");
+                            ConsoleHelper.pause();
+                        }
+                        else
+                        {
+                            int pages = admin.totalPages(pageSize);
+                            int currentPage = 1;
+                            while (true)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("RollNO      Name        Sem      Merit %      Room        Total Bill");
+                                Console.WriteLine("------------------------------------------------------------------");
+                                foreach (Student s in admin.getPage(currentPage, pageSize))
+                                {
+                                    Console.WriteLine(s);
+                                }
+                                Console.WriteLine("Page " + currentPage + " of " + pages + " (Total records: " + total + ")");
+                                Console.WriteLine("N. Next Page | P. Previous Page | F. First Page | L. Last Page | X. Exit");
+                                string nav = ConsoleHelper.readText("Choose: ");
+                                if (nav == "N" || nav == "n")
+                                {
+                                    if (currentPage < pages)
+                                    {
+                                        currentPage++;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("You are already on last page.");
+                                        ConsoleHelper.pause();
+                                    }
+                                }
+                                else if (nav == "P" || nav == "p")
+                                {
+                                    if (currentPage > 1)
+                                    {
+                                        currentPage--;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("You are already on first page.");
+                                        ConsoleHelper.pause();
+                                    }
+                                }
+                                else if (nav == "F" || nav == "f")
+                                {
+                                    currentPage = 1;
+                                }
+                                else if (nav == "L" || nav == "l")
+                                {
+                                    currentPage = pages;
+                                }
+                                else if (nav == "X" || nav == "x")
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid option.");
+                                    ConsoleHelper.pause();
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (opt == 6)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Room types: Executive Cubicle, Standard Cubicle, Shared Dorm");
+                    string room = ConsoleHelper.readText("Enter Room (press Enter to skip): ");
+                    Console.WriteLine("1. Bill above value");
+                    Console.WriteLine("2. Bill below value");
+                    Console.WriteLine("3. Skip bill filter");
+                    int numChoice = ConsoleHelper.readNum("Choose bill option: ");
+                    float numValue = 0;
+                    if (numChoice == 1 || numChoice == 2)
+                    {
+                        numValue = ConsoleHelper.readFloat("Enter bill value: ");
+                    }
+                    else
+                    {
+                        numChoice = 0;
+                    }
+                    List<Student> result = admin.quickFilter(room, numChoice, numValue);
+                    if (result.Count == 0)
+                    {
+                        Console.WriteLine("No records found.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("RollNO      Name        Sem      Merit %      Room        Total Bill");
+                        Console.WriteLine("------------------------------------------------------------------");
+                        foreach (Student s in result)
+                        {
+                            Console.WriteLine(s);
+                        }
+                        float totalBill = 0;
+                        float highest = result[0].bill;
+                        float lowest = result[0].bill;
+                        foreach (Student s in result)
+                        {
+                            totalBill = totalBill + s.bill;
+                            if (s.bill > highest)
+                            {
+                                highest = s.bill;
+                            }
+                            if (s.bill < lowest)
+                            {
+                                lowest = s.bill;
+                            }
+                        }
+                        Console.WriteLine("Count: " + result.Count);
+                        Console.WriteLine("Total Bill: Rs " + totalBill);
+                        Console.WriteLine("Highest Bill: Rs " + highest);
+                        Console.WriteLine("Lowest Bill: Rs " + lowest);
+                    }
+                    ConsoleHelper.pause();
+                }
+                else if (opt == 7)
                 {
                     break;
                 }
