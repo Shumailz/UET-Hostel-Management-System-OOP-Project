@@ -120,11 +120,11 @@ namespace HostelSystem.Service
                 bool numOk = true;
                 if (numChoice == 1)
                 {
-                    numOk = s.bill > numValue;
+                    numOk = s.bill >= numValue;
                 }
                 else if (numChoice == 2)
                 {
-                    numOk = s.bill < numValue;
+                    numOk = s.bill <= numValue;
                 }
                 if (roomOk && numOk)
                 {
