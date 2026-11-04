@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HostelSystem.MODEL;
 using HostelSystem.REPOSITORY;
@@ -66,6 +67,71 @@ namespace HostelSystem.Service
             }
             repo.removeStudent(s);
             return true;
+        }
+
+        public int totalPages(int pageSize)
+        {
+            if (pageSize <= 0)
+            {
+                return 0;
+            }
+            int total = repo.students.Count;
+            if (total == 0)
+            {
+                return 0;
+            }
+            int pages = total / pageSize;
+            if (total % pageSize != 0)
+            {
+                pages++;
+            }
+            return pages;
+        }
+
+        public List<Student> getPage(int pageNumber, int pageSize)
+        {
+            List<Student> page = new List<Student>();
+            if (pageSize <= 0)
+            {
+                return page;
+            }
+            if (pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
+            int start = (pageNumber - 1) * pageSize;
+            for (int i = start; i < start + pageSize && i < repo.students.Count; i++)
+            {
+                page.Add(repo.students[i]);
+            }
+            return page;
+        }
+
+        public List<Student> quickFilter(string room, int numChoice, float numValue)
+        {
+            List<Student> result = new List<Student>();
+            foreach (Student s in repo.students)
+            {
+                bool roomOk = true;
+                if (room != null && room != "")
+                {
+                    roomOk = string.Equals(s.room, room, StringComparison.OrdinalIgnoreCase);
+                }
+                bool numOk = true;
+                if (numChoice == 1)
+                {
+                    numOk = s.bill > numValue;
+                }
+                else if (numChoice == 2)
+                {
+                    numOk = s.bill < numValue;
+                }
+                if (roomOk && numOk)
+                {
+                    result.Add(s);
+                }
+            }
+            return result;
         }
 
         public int execLeft()
